@@ -2,7 +2,7 @@
 # a GitHub Release with the zip, then opens a community-catalog PR so the Community
 # Store offers it.
 #
-#   git tag v2.7.0 && git push origin v2.7.0
+#   git tag v2.7.1 && git push origin v2.7.1
 #
 # The tag drives the version stamped into the build (-Drevision → pom/${project.version},
 # so plugin.xml pluginVersion + the library jar names) and webadmin/plugin.json; oie.json
