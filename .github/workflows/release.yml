@@ -2,7 +2,7 @@
 # a GitHub Release with the zip, then opens a community-catalog PR so the Community
 # Store offers it.
 #
-#   git tag v2.7.1 && git push origin v2.7.1
+#   git tag v2.7.2 && git push origin v2.7.2
 #
 # The tag drives the version stamped into the build (-Drevision → pom/${project.version},
 # so plugin.xml pluginVersion + the library jar names) and webadmin/plugin.json; oie.json
@@ -191,6 +191,14 @@ jobs:
               "docsUrl": "https://raw.githubusercontent.com/${{ github.repository }}/v${VERSION}/docs/store.md"
           }
           EOF
+          # Surface which UIs this version ships (ui from the tagged oie.json,
+          # downloaded above); omitted entirely when oie.json declares none.
+          UI="$(jq -c '.ui // empty' /tmp/oie.json)"
+          if [ -n "$UI" ]; then
+            jq --indent 4 --argjson ui "$UI" '. + {ui: $ui}' \
+              "manifests/plugins/${PLUGIN_ID}/${VERSION}.json" > /tmp/manifest.json
+            mv /tmp/manifest.json "manifests/plugins/${PLUGIN_ID}/${VERSION}.json"
+          fi
 
       - name: Validate (schema + digest download)
         run: node scripts/build-index.mjs --lint --verify "manifests/plugins/${PLUGIN_ID}/${VERSION}.json"
